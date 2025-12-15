@@ -16,6 +16,10 @@ app.listen(PORT, '10.106.0.4', () => {
   console.log(`🚀 Server running on http:/10.106.0.4:${PORT}`);
 });
 
+app.listen(PORT, '10.106.0.4', () => {
+  console.log(`🚀 Server running on http:/10.106.0.4:${PORT}`);
+});
+
 app.listen(PORT, '127.0.0.1', () => {
   console.log(`🚀 Server running on http:/127.0.0.1:${PORT}`);
 });

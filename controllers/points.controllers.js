@@ -3,16 +3,16 @@ const PointLog = require("../models/PointLog");
 
 const ACTION_SETTINGS = {
   WATCH_CHANNEL:   { points: 1, dailyLimit: 1 },
-  POST_HOME:       { points: 4, dailyLimit: 5 },
-  CHAT_COMMENT:    { points: 5, dailyLimit: 10 },
-  SCAN_QR:         { points: 4, dailyLimit: 10 },
-  HOME_AD_CLICK:   { points: 5, dailyLimit: 10 },
-  CHAT_AD_CLICK:   { points: 5, dailyLimit: 10 },
-  ASK_IRIS:        { points: 4, dailyLimit: 10 },
-  SPONSOR_SURVEY:  { points: 5, dailyLimit: 3 },
-  CREATOR_STREAM:  { points: 5, dailyLimit: 5 },
-  DAILY_LOGIN:     { points: 2, dailyLimit: 1 },
-  ANSWER_QUIZ:     { points: 4, dailyLimit: 5 }
+  POST_HOME:       { points: 1, dailyLimit: 4 },
+  CHAT_COMMENT:    { points: 1, dailyLimit: 1 },
+  SCAN_QR:         { points: 1, dailyLimit: 4 },
+  HOME_AD_CLICK:   { points: 1, dailyLimit: 5 },
+  CHAT_AD_CLICK:   { points: 1, dailyLimit: 5 },
+  ASK_IRIS:        { points: 1, dailyLimit: 5 },
+  SPONSOR_SURVEY:  { points: 1, dailyLimit: 3 },
+  CREATOR_STREAM:  { points: 1, dailyLimit: 1 },
+  DAILY_LOGIN:     { points: 1, dailyLimit: 2 },
+  ANSWER_QUIZ:     { points: 1, dailyLimit: 4 }
 };
 
 exports.addPoints = async (req, res) => {

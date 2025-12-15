@@ -3,16 +3,16 @@ const PointLog = require("../models/PointLog");
 
 const ACTION_SETTINGS = {
   WATCH_CHANNEL:   { points: 1, dailyLimit: 1 },
-  POST_HOME:       { points: 4, dailyLimit: 5 },
-  CHAT_COMMENT:    { points: 5, dailyLimit: 10 },
-  SCAN_QR:         { points: 4, dailyLimit: 10 },
-  HOME_AD_CLICK:   { points: 5, dailyLimit: 10 },
-  CHAT_AD_CLICK:   { points: 5, dailyLimit: 10 },
-  ASK_IRIS:        { points: 4, dailyLimit: 10 },
-  SPONSOR_SURVEY:  { points: 5, dailyLimit: 3 },
-  CREATOR_STREAM:  { points: 5, dailyLimit: 5 },
-  DAILY_LOGIN:     { points: 2, dailyLimit: 1 },
-  ANSWER_QUIZ:     { points: 4, dailyLimit: 5 }
+  POST_HOME:       { points: 1, dailyLimit: 4 },
+  CHAT_COMMENT:    { points: 1, dailyLimit: 1 },
+  SCAN_QR:         { points: 1, dailyLimit: 4 },
+  HOME_AD_CLICK:   { points: 1, dailyLimit: 5 },
+  CHAT_AD_CLICK:   { points: 1, dailyLimit: 5 },
+  ASK_IRIS:        { points: 1, dailyLimit: 5 },
+  SPONSOR_SURVEY:  { points: 1, dailyLimit: 3 },
+  CREATOR_STREAM:  { points: 1, dailyLimit: 1 },
+  DAILY_LOGIN:     { points: 1, dailyLimit: 2 },
+  ANSWER_QUIZ:     { points: 1, dailyLimit: 4 }
 };
 
 exports.addPoints = async (req, res) => {
@@ -40,14 +40,21 @@ exports.addPoints = async (req, res) => {
     // Today start time
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    // Check daily limit
-    const usageToday = await PointLog.countDocuments({
+    // For DAILY_LOGIN, ignore meta differences
+    let query = {
       email,
       action: ACTION,
-      meta: meta,       // full exact match
       createdAt: { $gte: today }
-    });
+    };
+
+    // Optional: only ignore meta for certain actions
+    if (ACTION !== "DAILY_LOGIN" && ACTION !== "POST_HOME") {
+      query.meta = meta;  // match full meta for other actions
+    }
+
+    // Check daily limit
+    const usageToday = await PointLog.countDocuments(query);
+
 
     if (usageToday >= settings.dailyLimit) {
       return res.status(429).json({
@@ -82,6 +89,74 @@ exports.addPoints = async (req, res) => {
       message: "Points added successfully",
       added: settings.points,
       totalPoints: user.points
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+
+exports.getPointsByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      });
+    }
+
+    const user = await User.findOne({ email }).select("email points");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    return res.json({
+      success: true,
+      email: user.email,
+      points: user.points
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+exports.getPointsHistoryByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const { limit = 50, skip = 0 } = req.query;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      });
+    }
+
+    const logs = await PointLog.find({ email })
+      .sort({ createdAt: -1 }) // DESC order
+      .limit(Number(limit))
+      .skip(Number(skip))
+      .select("action points meta deviceId ip createdAt");
+
+    return res.json({
+      success: true,
+      email,
+      count: logs.length,
+      logs
     });
 
   } catch (error) {

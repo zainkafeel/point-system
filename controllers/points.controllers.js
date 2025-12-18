@@ -55,8 +55,9 @@ exports.addPoints = async (req, res) => {
     // Check daily limit
     const usageToday = await PointLog.countDocuments(query);
 
-
+    console.log(`Usage today for ${email} on action ${ACTION}: ${usageToday}`, 'limit:', settings.dailyLimit);
     if (usageToday >= settings.dailyLimit) {
+      console.log('limit exceeded');  
       return res.status(429).json({
         success: false,
         message: `Daily limit reached for ${ACTION}`

@@ -48,7 +48,7 @@ exports.addPoints = async (req, res) => {
     };
 
     // Optional: only ignore meta for certain actions
-    if (ACTION !== "DAILY_LOGIN" && ACTION !== "POST_HOME") {
+    if (ACTION !== "DAILY_LOGIN" && ACTION !== "POST_HOME" && ACTION !== "WATCH_CHANNEL") {
       query.meta = meta;  // match full meta for other actions
     }
 

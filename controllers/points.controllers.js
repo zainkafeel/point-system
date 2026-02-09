@@ -4,7 +4,7 @@ const PointLog = require("../models/PointLog");
 const ACTION_SETTINGS = {
   WATCH_CHANNEL:   { points: 1, dailyLimit: 1 },
   POST_HOME:       { points: 1, dailyLimit: 4 },
-  CHAT_COMMENT:    { points: 1, dailyLimit: 1 },
+  CHAT_COMMENT:    { points: 1, dailyLimit: 5 },
   SCAN_QR:         { points: 1, dailyLimit: 4 },
   HOME_AD_CLICK:   { points: 1, dailyLimit: 5 },
   CHAT_AD_CLICK:   { points: 1, dailyLimit: 5 },
